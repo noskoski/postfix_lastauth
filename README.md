@@ -2,7 +2,7 @@ last_auth.py
 
 Objective:
 
-Use Postfix access control to save the last sasl authentication  (date, not datetime ) of an user in mysql 
+Use Postfix access control to save the last sasl authentication (smtps or submission )  (date, not datetime ) of an user in mysql 
 
 
 
