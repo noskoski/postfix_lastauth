@@ -52,7 +52,7 @@ Test:
  
   1 - verify if the daemon are listening:
         
-        netstat -nl |grep 10007 ( user your _bindport value )
+        netstat -nl |grep 10007 ( use your _bindport value )
         
     
   2 - The test
