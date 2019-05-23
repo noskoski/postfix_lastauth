@@ -69,16 +69,13 @@ class Job(threading.Thread):
                 data=self.sock.recv(1024)
                 if data == b'':
                     break
-                if data.decode("UTF-8") :
-                    self.__total_data  = self.__total_data + data.decode("UTF-8")
-                    if self.__end in data.decode("UTF-8") :
-                        break
-                else:
+                self.__total_data  = self.__total_data + data.decode("UTF-8","ignore")
+                if self.__end in data.decode("UTF-8","ignore") :
                     break
             except UnicodeDecodeError as e:
                 logging.error(self.name + " unicode error: %s " % str(e) )
                 break
-                
+
             except KeyboardInterrupt:
                 logging.error(self.name + ' CTRL-C HIT')
                 break
