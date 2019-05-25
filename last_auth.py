@@ -20,13 +20,12 @@ from logging.handlers import SysLogHandler
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
 _bind='127.0.0.1'
-_bindport=10007
+_bindport=10008
+
 _myhost="localhost"
-_myuser="last_access"
+_myuser="mail"
 _mypasswd="a9x35fx0"
 _mydb="mail"
-_mytable="mailbox"
-_mycolumn="last_auth"
 
 
 logger = logging.getLogger()
@@ -36,20 +35,20 @@ syslog.setFormatter(formatter)
 logger.addHandler(syslog)
 
 # Loglevel INFO
-logger.setLevel(logging.INFO)
+#logger.setLevel(logging.INFO)
 # Loglevel Debug
-#logger.setLevel(logging.NOTSET)
+logger.setLevel(logging.NOTSET)
 
-syslog = SysLogHandler(address='/dev/log', facility='mail')
-formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
-syslog.setFormatter(formatter)
-logger.addHandler(syslog)
+#syslog = SysLogHandler(address='/dev/log', facility='mail')
+#formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
+#syslog.setFormatter(formatter)
+#logger.addHandler(syslog)
 
 class Job(threading.Thread):
 
     def __init__(self,sock,name):
         threading.Thread.__init__(self)
-        self.start = time.time()
+        self.starttime = time.time()
         self.shutdown_flag = threading.Event()
         self.sock = sock
         self.name = name
@@ -138,7 +137,7 @@ class Job(threading.Thread):
 
         self.sock.close()
         self.terminate = 1
-        logging.debug('%s Thread  stopped : (%.4f)' % (self.name, time.time() - self.start , ) )
+        logging.debug('%s Thread  stopped : (%.4f)' % (self.name, time.time() - self.starttime , ) )
 
 
 class ServiceExit(Exception):
@@ -197,10 +196,10 @@ def Main():
         if c:
             logging.debug(' connected to :' + str(addr[0]) + ':' + str(addr[1]))
             process = (Job(c,"[" + str(i) + "]"))
-            process.daemon = True
-            process.start
+            #process.daemon = True
+#            process.start
             aThreads.append(process)
-            del process
+#            del process
 
         i += 1
         if (i > 99999):
