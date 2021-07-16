@@ -1,48 +1,45 @@
 #!/usr/bin/python3
 # -*- coding: utf-8 -*-
 
-"""last_auth.py: Postfix Daemon that saves last sasl auth date ."""
+"""last_auth.py: Postfix Daemon that saves last saslauth date ."""
 
 __author__      = "Leandro Abelin Noskoski"
 __site__	= "www.alternativalinux.net"
 __projectpage__ = "https://github.com/noskoski/postfix_smtpd_last_auth"
 __copyright__   = "Copyright 2019, Alternativa Linux"
 __license__ 	= "GPL"
-__version__ 	= "1.0.1"
-__maintainer__ 	= "Rob Knight"
+__version__ 	= "1.5.0"
+__maintainer__ 	= "Leandro Abelin Noskoski"
 __email__ 	= "leandro@alternatialinux.net"
 __status__ 	= "Production"
 
-import socket,struct,sys,time, logging, re, MySQLdb, syslog, errno, signal, threading, unicodedata
+import os,socket,struct,sys,time, logging, re, mysql.connector, syslog, errno, signal, threading, unicodedata,json
 # import thread module
 from logging.handlers import SysLogHandler
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
 
-_bind='127.0.0.1'
-_bindport=10008
 
-_myhost="localhost"
-_myuser="mail"
-_mypasswd="a9x35fx0"
-_mydb="mail"
+try:
+    with open('last_auth.json') as json_data_file:
+        _conf = json.load(json_data_file)
+except:
+    sys.stderr.write("can't open last_auth.json\n")
+    quit()
+
+##OVERWRITE with environment variables (Dockerfile)
+for k, v in os.environ.items():
+    _conf[k] = v
+
 
 
 logger = logging.getLogger()
-syslog = SysLogHandler(address='/dev/log', facility='mail')
+syslog = SysLogHandler(address=(str(_conf["_logaddress"]),int(_conf["_logport"])),facility=str(_conf["_logfacility"]) )
 formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
 syslog.setFormatter(formatter)
 logger.addHandler(syslog)
+logger.setLevel(logging.getLevelName(_conf["_loglevel"]))
 
-# Loglevel INFO
-#logger.setLevel(logging.INFO)
-# Loglevel Debug
-logger.setLevel(logging.NOTSET)
-
-#syslog = SysLogHandler(address='/dev/log', facility='mail')
-#formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
-#syslog.setFormatter(formatter)
-#logger.addHandler(syslog)
 
 class Job(threading.Thread):
 
@@ -108,12 +105,6 @@ class Job(threading.Thread):
             except socket.error as e:
                 logging.error(self.name + " socket error: %s " % str(e) )
 
-#            try:
-#                self.sock.shutdown(socket.SHUT_RDWR)
-
-#            except socket.error as e:
-#                logging.error(self.name + " socket error: %s " % str(e) )
-
 #####DATAREAD
 
     def run(self):
@@ -123,17 +114,19 @@ class Job(threading.Thread):
         if len(self.__sasl_username) > 5 :
            try:
                logging.info(self.name + ' sasl_username:(' + self.__sasl_username + ')')
-               _con = MySQLdb.connect(host=_myhost, user=_myuser, passwd=_mypasswd, db=_mydb)
+               _con = mysql.connector.connect(host=_conf["_myhost"], user=_conf["_myuser"], passwd=_conf["_mypasswd"],
+                                              db=_conf["_mydb"])
                _cursor = _con.cursor()
-               _affected_rows = _cursor.execute("UPDATE mailbox set last_auth = date(now()) WHERE username=%s ;",[str(self.__sasl_username)])
+               _cursor.execute("UPDATE mailbox set last_auth = date(now()) WHERE username=%s ;",[str(self.__sasl_username)])
+               _affected_rows = _cursor.rowcount
                _con.commit()
                logging.info(self.name + ' _affected_rows: ' + str(_affected_rows))
                _con.close()
 
-           except MySQLdb.Error as e:
+           except Error as e:
                _con.rollback()
                _con.close()
-               logging.error(self.name + " mySQL Error: %s" % str(e))
+               logging.error(self.name + " mySQL Error: ")
 
         self.sock.close()
         self.terminate = 1
@@ -150,7 +143,11 @@ def service_shutdown(signum, frame):
 
 def Main():
 
-    socket.setdefaulttimeout(1440)
+    #try to connect at the start
+    _con = mysql.connector.connect(host=_conf["_myhost"], user=_conf["_myuser"], passwd=_conf["_mypasswd"], db=_conf["_mydb"])
+    _con.close()
+
+    socket.setdefaulttimeout(int(_conf["_bindtimeout"]))
     s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
     s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
     signal.signal(signal.SIGTERM, service_shutdown)
@@ -163,8 +160,8 @@ def Main():
     while (not sockok):
 
         try:
-            s.bind((_bind, _bindport))
-            logging.debug(' socket binded to port: ' + str(_bindport))
+            s.bind((_conf["_bind"], _conf["_bindport"]))
+            logging.debug(' socket binded to port: ' + str(_conf["_bindport"]))
             # put the socket into listening mode
             s.listen(128)
             logging.debug(' socket is listening')
@@ -173,6 +170,10 @@ def Main():
         except socket.error as e:
             logging.error(" socket error: %s " % str(e) )
             time.sleep(2)
+
+        except socket.timeout as e:
+            logging.warning("socket error: %s " % str(e) )
+
 
 
     # a forever loop until client wants to exit
