@@ -160,7 +160,7 @@ def Main():
     while (not sockok):
 
         try:
-            s.bind((_conf["_bind"], _conf["_bindport"]))
+            s.bind((str(_conf["_bind"]), int(_conf["_bindport"])))
             logging.debug(' socket binded to port: ' + str(_conf["_bindport"]))
             # put the socket into listening mode
             s.listen(128)
