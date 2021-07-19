@@ -16,7 +16,7 @@ ENV _bind=0.0.0.0 \
   _mypasswd=1a2b3c \
   _mydb=mail \
   _logfacility=mail \
-  _logaddress=localhost \
+  _logaddress=172.17.0.1 \
   _logport=514 \
   _loglevel=INFO
 
