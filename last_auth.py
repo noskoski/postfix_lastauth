@@ -81,7 +81,7 @@ class Job(threading.Thread):
                 break
 
             except socket.timeout as e:
-                logging.error(self.name + " socket timeout: %s " % str(e) )
+                logging.warning(self.name + " socket timeout: %s " % str(e) )
                 break
 
         logging.debug(self.name + " end of recv: (" + str(len(self.__total_data)) + ")")
