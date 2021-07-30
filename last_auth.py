@@ -172,7 +172,7 @@ def Main():
             time.sleep(2)
 
         except socket.timeout as e:
-            logging.warning("socket error: %s " % str(e) )
+            logging.debug("socket error: %s " % str(e) )
 
 
 
