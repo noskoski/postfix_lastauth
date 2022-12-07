@@ -21,7 +21,7 @@ ENV _bind=0.0.0.0 \
   _logaddress=172.17.0.1 \
   _logport=514 \
   _loglevel=INFO \
-  _loghandler=stdout
+  _logout=stdout
 
 
 RUN pip install mysql-connector-python

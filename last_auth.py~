@@ -34,7 +34,7 @@ for k, v in os.environ.items():
 
 
 logger = logging.getLogger()
-if _conf["_loghandler"] == 'syslog' :
+if _conf["_loghandler"]='syslog' :
     syslog = SysLogHandler(address=(str(_conf["_logaddress"]),int(_conf["_logport"])),facility=str(_conf["_logfacility"]) )
     formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
     syslog.setFormatter(formatter)
