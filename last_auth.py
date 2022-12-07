@@ -17,7 +17,7 @@ import os,socket,struct,sys,time, logging, re, mysql.connector, syslog, errno, s
 # import thread module
 from logging.handlers import SysLogHandler
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 
 try:
