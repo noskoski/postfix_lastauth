@@ -33,9 +33,9 @@ ENV _bind=0.0.0.0 \
   _loghandler=stdout
 
 RUN pip install mysql-connector-python
-
+ 	
 HEALTHCHECK CMD netstat -an | grep ${_bindport} > /dev/null; if [ 0 != $? ]; then exit 1; fi;
 
-VOLUME ["/postfix_lastauth"]
+#VOLUME ["/postfix_lastauth"]
 
 CMD [ "python", "/postfix_lastauth/last_auth.py" ]
