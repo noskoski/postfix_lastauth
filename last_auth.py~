@@ -188,7 +188,7 @@ def Main():
             c, addr = s.accept()
         except socket.error as e:
             logging.error(" socket error: %s " % str(e) )
-            pass
+            continue
         except ServiceExit:
             logging.warning(" ServiceExit : " )
             for th in aThreads:
