@@ -17,7 +17,7 @@ import os,socket,struct,sys,time, logging, re, mysql.connector, syslog, errno, s
 # import thread module
 from logging.handlers import SysLogHandler
 
-logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.DEBUG)
+logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
 
 
 try:
@@ -172,12 +172,12 @@ def Main():
             sockok=1
 
         except socket.error as e:
-            logging.error(" socket error: %s " % str(e) )
+            logging.error(" socket errorX: %s " % str(e) )
             time.sleep(2)
-
+            continue
         except socket.timeout as e:
-            logging.debug("socket error: %s " % str(e) )
-
+            logging.debug("socket errorX: %s " % str(e) )
+            continue
 
 
     # a forever loop until client wants to exit

@@ -172,12 +172,12 @@ def Main():
             sockok=1
 
         except socket.error as e:
-            logging.error(" socket error: %s " % str(e) )
+            logging.error(" socket error in startup: %s " % str(e) )
             time.sleep(2)
-
+            continue
         except socket.timeout as e:
-            logging.debug("socket error: %s " % str(e) )
-
+            logging.debug("socket error in startup: %s " % str(e) )
+            continue
 
 
     # a forever loop until client wants to exit
