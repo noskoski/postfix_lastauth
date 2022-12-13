@@ -85,7 +85,7 @@ class Job(threading.Thread):
                 break
 
             except socket.error as e:
-                logging.error(self.name + " socket error: %s " % str(e) )
+                logging.warning(self.name + " socket error: %s " % str(e) )
                 break
 
 
@@ -108,7 +108,7 @@ class Job(threading.Thread):
                 logging.debug(self.name + ' sending OK, go ahead')
 
             except socket.error as e:
-                logging.error(self.name + " socket error: %s " % str(e) )
+                logging.warning(self.name + " socket error: %s " % str(e) )
 
 #####DATAREAD
 
@@ -176,7 +176,7 @@ def Main():
             logging.debug("socket error in startup: %s " % str(e) )
             continue
         except socket.error as e:
-            logging.error(" socket error in startup: %s " % str(e) )
+            logging.warning(" socket error in startup: %s " % str(e) )
             time.sleep(2)
             continue
 
@@ -188,7 +188,7 @@ def Main():
         try:
             c, addr = s.accept()
         except socket.error as e:
-            logging.error(" socket error: %s " % str(e) )
+            logging.warning(" socket error: %s " % str(e) )
             continue
         except ServiceExit:
             logging.warning(" ServiceExit : " )
