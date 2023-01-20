@@ -9,6 +9,5 @@
    "_logaddress" : "127.0.0.1",
    "_logport" : 514,
    "_logfacility": "mail",
-   "_loglevel": "DEBUG",
-   "_loghandler": "syslog"
+   "_loglevel": "DEBUG"
 }

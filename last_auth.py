@@ -14,7 +14,6 @@ __email__ 	= "leandro@alternatialinux.net"
 __status__ 	= "Production"
 
 import os,socket,struct,sys,time, logging, re, mysql.connector, syslog, errno, signal, threading, unicodedata,json
-# import thread module
 from logging.handlers import SysLogHandler
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -30,7 +29,6 @@ except:
 ##OVERWRITE with environment variables (Dockerfile)
 for k, v in os.environ.items():
     _conf[k] = v
-
 
 
 logger = logging.getLogger()

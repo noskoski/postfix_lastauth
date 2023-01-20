@@ -8,3 +8,4 @@ stdout_logfile=/var/log/mail.last_auth.log
 user=    [ change it ]
 logfile_maxbytes = 50MB
 logfile_backups=10
+loghandler=syslog

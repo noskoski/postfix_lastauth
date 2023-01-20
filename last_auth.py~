@@ -14,7 +14,6 @@ __email__ 	= "leandro@alternatialinux.net"
 __status__ 	= "Production"
 
 import os,socket,struct,sys,time, logging, re, mysql.connector, syslog, errno, signal, threading, unicodedata,json
-# import thread module
 from logging.handlers import SysLogHandler
 
 logging.basicConfig(format='%(levelname)s:%(message)s', level=logging.INFO)
@@ -32,9 +31,8 @@ for k, v in os.environ.items():
     _conf[k] = v
 
 
-
 logger = logging.getLogger()
-if _conf["_loghandler"] == 'syslog' :
+if _conf["_loghandler"] = 'syslog' :
     syslog = SysLogHandler(address=(str(_conf["_logaddress"]),int(_conf["_logport"])),facility=str(_conf["_logfacility"]) )
     formatter = logging.Formatter('postfix/%(module)s[%(process)d]:%(message)s')
     syslog.setFormatter(formatter)
@@ -85,7 +83,7 @@ class Job(threading.Thread):
                 break
 
             except socket.error as e:
-                logging.error(self.name + " socket error: %s " % str(e) )
+                logging.warning(self.name + " socket error: %s " % str(e) )
                 break
 
 
@@ -108,7 +106,7 @@ class Job(threading.Thread):
                 logging.debug(self.name + ' sending OK, go ahead')
 
             except socket.error as e:
-                logging.error(self.name + " socket error: %s " % str(e) )
+                logging.warning(self.name + " socket error: %s " % str(e) )
 
 #####DATAREAD
 
@@ -176,7 +174,7 @@ def Main():
             logging.debug("socket error in startup: %s " % str(e) )
             continue
         except socket.error as e:
-            logging.error(" socket error in startup: %s " % str(e) )
+            logging.warning(" socket error in startup: %s " % str(e) )
             time.sleep(2)
             continue
 
@@ -188,7 +186,7 @@ def Main():
         try:
             c, addr = s.accept()
         except socket.error as e:
-            logging.error(" socket error: %s " % str(e) )
+            logging.warning(" socket error: %s " % str(e) )
             continue
         except ServiceExit:
             logging.warning(" ServiceExit : " )
