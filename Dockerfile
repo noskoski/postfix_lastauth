@@ -1,7 +1,5 @@
 FROM python:3.9
 
-MAINTAINER "leandro@alternativalinux.net"
-
 RUN mkdir /postfix_lastauth/ -p && \
         apt-get update && \
         apt-get install -y --no-install-recommends  net-tools && \
